@@ -47,6 +47,13 @@
       width: 122px;
     }
   </style>
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "5ac4e3fe3fa7455bbe76611a81085742"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
 </head>
 
 <body>
@@ -84,6 +91,10 @@
       <button>End Timer</button>
       <button>Console Trace</button>
       <button>Trigger a Global Error</button>
+      <button>Try/Catch/Finally</button>
+      <button>Try/Throw/Catch</button>
+      <button>Throw and Custom Errors</button>
+      <button onclick="badCode()">Global Error Handler</button>
     </section>
   </main>
 
@@ -96,12 +107,187 @@
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
       output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      // try{
+      //   if (Number.isNaN(parseFloat(firstNum)) || Number.isNaN(parseFloat(secondNum))){
+      //     throw new TypeError("Invalid Input !")
+      //   }
+      //   output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      // }
+      // catch(err){
+      //   alert(err.name + " : " + err.message);
+      // }
+      // finally{
+      //   alert("Try Again : >")
+      // }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
-    // Start your code here
-    // You may move this JS to another file if you wish
+    // Console Log Btn Implementation: When clicked, display the log message
+    errorBtns[0].addEventListener('click', e => {
+      e.preventDefault();
+      console.log("Console Log Demo");
+    })
+
+    // Console Error Btn Implementation: When clicked, display the error message
+    errorBtns[1].addEventListener('click', e => {
+      e.preventDefault();
+      console.error("Console Error Demo");
+    })
+
+    // Console Count Btn Implementation: When clicked, increase the count number
+    errorBtns[2].addEventListener('click', e => {
+      e.preventDefault();
+      console.count('Count Button');
+    })
+
+    // Console Warn Btn Implementation: When clicked, display the warning message 
+    errorBtns[3].addEventListener('click', e => {
+      e.preventDefault();
+      console.warn('Console Warn Button');
+    })
+
+    // Console Assert Btn Implementation: When clicked, write an error when the expression evaluates to false
+    errorBtns[4].addEventListener('click', e => {
+      e.preventDefault();
+      const number = 2;
+      const errMessage = 'This number is not equal to 3';
+      console.assert(number == 3, {number, errMessage});
+    })
+    
+    // Console Clear Btn Implementation: When clicked, clear everything in the console
+    errorBtns[5].addEventListener('click', e => {
+      e.preventDefault();
+      console.clear();
+    })
+
+    // Console Dir Btn Implementation: When clicked, print a JSON representation of the specific object
+    errorBtns[6].addEventListener('click', e => {
+      e.preventDefault();
+      console.dir(errorBtns[6]);
+    })
+    
+    // Console dirxml Btn Implementation: When clicked, print a XML representation of the specific object
+    errorBtns[7].addEventListener('click', e => {
+      e.preventDefault();
+      console.dirxml(errorBtns[7]);
+    })
+
+    // Console Group Start Btn Implementation: When clicked, visuall group messages together
+    errorBtns[8].addEventListener('click', e => {
+      e.preventDefault();
+      const label = 'console_group';
+      console.group(label);
+    })
+
+    // Console Group End Btn Implementation: When clicked, end the grouping mechanisim
+    errorBtns[9].addEventListener('click', e => {
+      e.preventDefault();
+      console.groupEnd();
+    })
+
+    // Console Table Btn Implementation: When clicked, logs an array of objects as a table.
+    errorBtns[10].addEventListener('click', e => {
+      e.preventDefault();
+      let CSE110 = [
+        {
+          name: "Software Engineering",
+          value: 666
+        },
+        {
+          name: "Programming Language",
+          value: 888
+        },
+        {
+          name: "Advaned Programming",
+          value: 999
+        }
+      ];
+      console.table(CSE110);
+    })
+
+    // Start Timer Btn Implementation: When clicked, start a new timer
+    errorBtns[11].addEventListener('click', e => {
+      e.preventDefault();
+      console.time('Timer button');
+    })
+
+    // End Timer Btn Implementation: When clicked, end the timer
+    errorBtns[12].addEventListener('click', e => {
+        e.preventDefault();
+        console.timeEnd('Timer button');
+    })
+
+    // Console Trace Btn Implementation: When clicked, print the trace of current stack
+    errorBtns[13].addEventListener('click', e => {
+        e.preventDefault();
+        const deep = () => { deeper() };
+        const deeper = () => { deepest() };
+        const deepest = () => { console.trace() };
+        deep();
+    })
+
+    // Trigger a Global Error Btn Implementation: When clicked, end the timer
+    errorBtns[14].addEventListener('click', e => {
+        e.preventDefault();
+        console.log(button)
+    })
+
+    errorBtns[15].addEventListener('click', e => {
+        let json = '{Have a Good Day!}';
+        try{
+          let user = JSON.parse(json);
+        }
+        catch(err){
+          alert(err.name);
+          alert(err.message);
+        }
+        finally{
+          alert("Be careful next time !")
+        }
+    })
+
+    errorBtns[16].addEventListener('click', e => {
+        let json = '{"name": "Yr_Nemesis", "email": "buwu@ucsd"}';
+        try{
+          let user = JSON.parse(json);
+          if (!user.age){
+            throw new ReferenceError("Wrong access !");
+          }
+        }
+        catch(err){
+          alert("ReferenceError : " + err.message);
+        }
+    })
+
+    errorBtns[17].addEventListener('click', e => {
+       class CustomError extends Error {
+        constructor(message){
+          super(message);
+          this.name = "CustomError";
+        }
+       }
+       
+       try{
+        throw new CustomError("Error mode");
+       }
+       catch(err){
+        alert(err.message);
+        alert(err.name);
+        alert(err.stack);
+       }
+    })
+
+    function badCode(){
+      alert("Good code running when suddenly...");
+      abooM("bad code!");
+    };
+
+    window.onerror = function(errMsg, url, line, column, error) {
+      console.log("Sadly an error happened my friend");
+      console.error(errMsg);
+      return true;
+    };
   </script>
 </body>
 
